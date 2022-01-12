@@ -9,13 +9,13 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 interface ScheduleRepository {
-    fun events(nextPageToken: String = ""): Flow<PagingData<Event>>
+    fun events(): Flow<PagingData<Event>>
 }
 
 class ScheduleRepositoryImpl @Inject constructor(
     private val service: ScheduleService
 ) : ScheduleRepository {
-    override fun events(nextPageToken: String): Flow<PagingData<Event>> {
+    override fun events(): Flow<PagingData<Event>> {
         return Pager(
             config = PagingConfig(
                 pageSize = NETWORK_PAGE_SIZE,

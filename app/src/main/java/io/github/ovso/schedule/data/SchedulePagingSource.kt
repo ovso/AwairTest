@@ -14,7 +14,7 @@ class SchedulePagingSource(
             val data = response.events.filter { it.title.isNullOrEmpty().not() }
             val nextKey = response.nextPageToken
             LoadResult.Page(
-                data = data.sortedByDescending {
+                data = data.sortedBy {
                     it.start
                 },
                 prevKey = null,

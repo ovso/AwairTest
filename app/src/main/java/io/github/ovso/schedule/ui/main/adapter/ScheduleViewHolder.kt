@@ -21,16 +21,16 @@ class ScheduleViewHolder private constructor(
         binding.root.text = item.getContents()
         binding.root.setOnClickListener {
             with(Intent(it.context, InfoActivity::class.java)) {
-                putExtra(ARGS, createModel(item))
+                putExtra(ARGS, item.toInfoModel())
                 it.context.startActivity(this)
             }
         }
     }
 
-    private fun createModel(item: Event) = InfoModel(
-        title = item.title,
-        start = item.start,
-        end = item.end
+    private fun Event.toInfoModel(): InfoModel = InfoModel(
+        title = title,
+        start = start,
+        end = end
     )
 
     private fun Event.getContents(): StringBuilder {
