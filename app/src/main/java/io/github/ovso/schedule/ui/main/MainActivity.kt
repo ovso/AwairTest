@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.ovso.schedule.databinding.ActivityMainBinding
@@ -34,6 +35,19 @@ class MainActivity : AppCompatActivity() {
             addItemDecoration(
                 DividerItemDecoration(this@MainActivity, RecyclerView.VERTICAL)
             )
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val lastVisibleItemPosition =
+                        (recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
+                    val itemTotalCount = recyclerView.adapter!!.itemCount - 1
+
+                    // 스크롤이 끝에 도달했는지 확인
+                    if (canScrollVertically(5).not() && lastVisibleItemPosition == itemTotalCount) {
+                        viewModel.fetchEvents()
+                    }
+                }
+            })
         }
     }
 }
