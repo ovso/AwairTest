@@ -1,4 +1,4 @@
-package io.github.ovso.awair
+package io.github.ovso.schedule
 
 import org.junit.Test
 

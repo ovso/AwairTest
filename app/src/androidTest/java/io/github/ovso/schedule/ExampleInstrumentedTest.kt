@@ -1,4 +1,4 @@
-package io.github.ovso.awair
+package io.github.ovso.schedule
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
