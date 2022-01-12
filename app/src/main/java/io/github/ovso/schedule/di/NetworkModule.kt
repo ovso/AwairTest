@@ -1,6 +1,5 @@
 package io.github.ovso.schedule.di
 
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,7 +21,6 @@ object NetworkModule {
             .baseUrl("https://mobile-app-interview.awair.is")
             .client(OkHttpClient.Builder().build())
             .addConverterFactory(GsonConverterFactory.create())
-//            .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()
     }
 

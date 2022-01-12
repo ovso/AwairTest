@@ -3,11 +3,11 @@
 package io.github.ovso.schedule.ui.main.adapter
 
 import android.view.ViewGroup
-import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.ListAdapter
 import io.github.ovso.schedule.data.Event
 import io.github.ovso.schedule.utils.ScheduleItemCallback
 
-class ScheduleAdapter : PagingDataAdapter<Event, ScheduleViewHolder>(ScheduleItemCallback()) {
+class ScheduleAdapter : ListAdapter<Event, ScheduleViewHolder>(ScheduleItemCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScheduleViewHolder =
         ScheduleViewHolder.create(parent)
 

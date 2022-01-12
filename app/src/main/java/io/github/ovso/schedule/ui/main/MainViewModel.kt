@@ -4,12 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.ovso.schedule.data.Event
 import io.github.ovso.schedule.data.ScheduleRepository
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -17,15 +15,15 @@ class MainViewModel @Inject constructor(
     private val repository: ScheduleRepository
 ) : ViewModel() {
 
-    private var currentSearchResult: Flow<PagingData<Event>>? = null
+    private val _items = MutableLiveData<List<Event>>(emptyList())
+    val items: LiveData<List<Event>> = _items
+    private var nextPageToken: String? = null
 
-    fun getEvents(): Flow<PagingData<Event>> {
-        val lastResult = currentSearchResult
-        if (lastResult != null) {
-            return lastResult
+    fun fetchEvents() = viewModelScope.launch {
+        val data = repository.events()
+        nextPageToken = data.nextPageToken
+        _items.value = _items.value?.toMutableList()?.apply {
+            addAll(data.events.filter { it.title.isNullOrEmpty().not() }.sortedBy { it.start })
         }
-        val newResult: Flow<PagingData<Event>> = repository.events().cachedIn(viewModelScope)
-        currentSearchResult = newResult
-        return newResult
     }
 }
