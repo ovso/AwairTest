@@ -11,7 +11,7 @@ class SchedulePagingSource(
     override suspend fun load(params: LoadParams<String>): LoadResult<String, Event> {
         return try {
             val response = service.events(params.key ?: "")
-            val data = response.events
+            val data = response.events.filter { it.title.isNullOrEmpty().not() }
             val nextKey = response.nextPageToken
             LoadResult.Page(
                 data = data.sortedByDescending {

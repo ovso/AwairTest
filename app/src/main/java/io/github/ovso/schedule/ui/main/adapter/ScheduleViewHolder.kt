@@ -6,10 +6,8 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import io.github.ovso.schedule.R
 import io.github.ovso.schedule.data.Event
 import io.github.ovso.schedule.databinding.ItemMainBinding
-import io.github.ovso.schedule.exts.stringResource
 import io.github.ovso.schedule.ui.info.InfoActivity
 import io.github.ovso.schedule.ui.info.InfoModel
 import io.github.ovso.schedule.utils.ARGS
@@ -37,9 +35,7 @@ class ScheduleViewHolder private constructor(
 
     private fun Event.getContents(): StringBuilder {
         return StringBuilder()
-            .append("[ ").append(
-                if (title.isNullOrBlank()) stringResource(R.string.cs) else title
-            ).append(" ]").append("\n")
+            .append("[ ").append(title).append(" ]").append("\n")
             .append("start -> ").append(start).append("\n")
             .append("end -> ").append(end)
     }
