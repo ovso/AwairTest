@@ -4,12 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.orhanobut.logger.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.ovso.schedule.data.Event
+import io.github.ovso.schedule.data.EventUiModel
 import io.github.ovso.schedule.data.ScheduleRepository
 import io.github.ovso.schedule.utils.TimeUtils
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -17,10 +17,9 @@ class MainViewModel @Inject constructor(
     private val repository: ScheduleRepository
 ) : ViewModel() {
 
-    private val _items = MutableLiveData<List<Event>>(emptyList())
-    val items: LiveData<List<Event>> = _items
+    private val _items = MutableLiveData<List<EventUiModel>>(emptyList())
+    val items: LiveData<List<EventUiModel>> = _items
 
-    //    private var prevPageToken: String? = null
     private var nextPageToken: String? = null
 
     fun fetchEvents() = viewModelScope.launch {
@@ -28,8 +27,27 @@ class MainViewModel @Inject constructor(
             if ((nextPageToken == "").not()) {
                 val data = repository.events(nextPageToken ?: "")
                 _items.value = _items.value?.toMutableList()?.apply {
-                    addAll(data.events.filter { it.title.isNullOrEmpty().not() })
-                    sortBy { TimeUtils.stringToSystemMillis(it.start!!) }
+                    addAll(data.events.filter { it.title.isNullOrEmpty().not() }.map {
+                        EventUiModel(
+                            title = it.title,
+                            start = it.start,
+                            end = it.end,
+                            conflict = false
+                        )
+                    })
+                    sortedBy { TimeUtils.stringToSystemMillis(it.start!!) }
+                    val startList = map {
+                        TimeUtils.stringToSystemMillis(it.start!!)
+                    }
+                    forEachIndexed { i, uiModel1 ->
+                        val frequency = Collections.frequency(
+                            startList,
+                            TimeUtils.stringToSystemMillis(uiModel1.start!!)
+                        )
+                        if (frequency > 1) {
+                            set(i, uiModel1.copy(conflict = true))
+                        }
+                    }
                 }
                 nextPageToken = data.nextPageToken
             }
